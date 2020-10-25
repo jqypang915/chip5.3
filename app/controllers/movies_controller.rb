@@ -12,14 +12,34 @@ class MoviesController < ApplicationController
   def index
     
     @all_ratings = ['G','PG','PG-13','R']
+    @title_class = "hilite"
+    @date_class = "hilite"
+    
+    
+    #byebug
+    @sort = params[:sort]
     @ratings_to_show = params[:ratings]
     @movies = Movie.with_ratings(@ratings_to_show)
+    
     if @ratings_to_show == nil
       @ratings_to_show = Array.new
     else
       @ratings_to_show = @ratings_to_show.keys
     end
-  end
+  
+    
+    
+    if @sort == "title"
+      @movies = @movies.order(:title)
+      @title_class = "hilite bg-warning"
+    end
+      
+    if @sort == "date"
+      @movies = @movies.order(:release_date)
+      @date_class = "hilite bg-warning"
+    end
+    
+  end 
 
   def new
     # default: render 'new' template
