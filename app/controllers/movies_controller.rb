@@ -37,7 +37,7 @@ class MoviesController < ApplicationController
     @title_class = "hilite"
     @date_class = "hilite"
     
-    @ratings_to_show = params[:ratings] 
+    @ratings_to_show = params[:ratings] || {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}
     @sort = params[:sort]
 
     
@@ -47,9 +47,7 @@ class MoviesController < ApplicationController
      
     
     @movies = Movie.with_ratings(@ratings_to_show)
-    if @ratings_to_show == nil
-      @ratings_to_show = Array.new
-    end
+
     
   
     if @sort == "title"
