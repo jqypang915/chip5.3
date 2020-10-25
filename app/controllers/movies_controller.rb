@@ -51,7 +51,6 @@ class MoviesController < ApplicationController
     session[:sort] = @sort
 
    
-    #Takin in a Hash of @ratings_to_show
     @movies = Movie.with_ratings(@ratings_to_show)
     
   
