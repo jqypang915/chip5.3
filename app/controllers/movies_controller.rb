@@ -1,14 +1,9 @@
 class MoviesController < ApplicationController
 
-  #before_action :parameters_set_show,  only: [:show]
-  before_action :parameters_set_index,  only: [:index]
+    before_action :parameters_set_index,  only: [:index]
   
   
-  def parameters_set_show
-    if (!params.has_key?(:sort) && !params.has_key?(:ratings))
-      redirect_to movie_path({:sort => session[:sort], :ratings => session[:ratings]})
-    end  
-  end
+
   
   
     def parameters_set_index
@@ -17,7 +12,8 @@ class MoviesController < ApplicationController
       
       # If ratings value is null
       if (params[:ratings].nil?)
-        redirect_to movies_path({:sort => "no", :ratings => {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}})
+        session.clear
+        redirect_to movies_path({:sort => session[:sort], :ratings => {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}})
       end
       
       
