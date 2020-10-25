@@ -16,13 +16,22 @@ class MoviesController < ApplicationController
     @date_class = "hilite"
     
     
-    #byebug
-    @sort = params[:sort]
-    @ratings_to_show = params[:ratings]
+    #Setting Values
+    
+    # If there exist a parameter or refresh 
+    if (params.has_key?(:sort) || params.has_key?(:ratings) || params.has_key?(:commit))
+      @sort = params[:sort] 
+      @ratings_to_show = params[:ratings] 
+    # else take whatever is in session  
+    else
+      @sort = session[:sort]
+      @ratings_to_show = session[:ratings]
+    end
+    
     @movies = Movie.with_ratings(@ratings_to_show)
     
     if @ratings_to_show == nil
-      @ratings_to_show = Array.new
+      @ratings_to_show = @all_ratings
     else
       @ratings_to_show = @ratings_to_show.keys
     end
@@ -38,6 +47,10 @@ class MoviesController < ApplicationController
       @movies = @movies.order(:release_date)
       @date_class = "hilite bg-warning"
     end
+    
+    session[:sort] = @sort
+    session[:ratings] = @ratings_to_show.map{|x| [x, 1]}.to_h
+    
     
   end 
 
