@@ -1,6 +1,33 @@
 class MoviesController < ApplicationController
 
+  #before_action :parameters_set_show,  only: [:show]
+  before_action :parameters_set_index,  only: [:index]
   
+  
+  def parameters_set_show
+    if (!params.has_key?(:sort) && !params.has_key?(:ratings))
+      redirect_to movie_path({:sort => session[:sort], :ratings => session[:ratings]})
+    end  
+  end
+  
+  
+    def parameters_set_index
+    # If it was a Refresh Request    
+    if (!params[:commit].blank?)
+      
+      # If ratings value is null
+      if (params[:ratings].nil?)
+        redirect_to movies_path({:ratings => {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}})
+      end
+      
+      
+    else    
+      # if it was not a refresh request (aka back from description) then set all the values to whatever it was originally
+      if (params[:sort].nil? && !session[:sort].nil? || params[:ratings].nil? && !session[:ratings].nil?)
+       redirect_to movies_path({:sort => params[:sort] || session[:sort], :ratings => params[:ratings] || session[:ratings]})
+      end
+    end
+  end
   
   
   def show
@@ -15,29 +42,19 @@ class MoviesController < ApplicationController
     @title_class = "hilite"
     @date_class = "hilite"
     
+    @ratings_to_show = params[:ratings] 
+
+    @sort = params[:sort]
+
     
-    #Setting Values
-    
-    # If there exist a parameter or refresh 
-    if (params.has_key?(:sort) || params.has_key?(:ratings) || params.has_key?(:commit))
-      @sort = params[:sort] 
-      @ratings_to_show = params[:ratings] 
-    # else take whatever is in session  
-    else
-      @sort = session[:sort]
-      @ratings_to_show = session[:ratings]
-    end
-    
+    session[:ratings] = @ratings_to_show
+    session[:sort] = @sort
+
+   
+    #Takin in a Hash of @ratings_to_show
     @movies = Movie.with_ratings(@ratings_to_show)
     
-    if @ratings_to_show == nil
-      @ratings_to_show = @all_ratings
-    else
-      @ratings_to_show = @ratings_to_show.keys
-    end
   
-    
-    
     if @sort == "title"
       @movies = @movies.order(:title)
       @title_class = "hilite bg-warning"
@@ -48,9 +65,8 @@ class MoviesController < ApplicationController
       @date_class = "hilite bg-warning"
     end
     
-    session[:sort] = @sort
-    session[:ratings] = @ratings_to_show.map{|x| [x, 1]}.to_h
     
+
     
   end 
 
