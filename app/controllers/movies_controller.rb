@@ -17,7 +17,7 @@ class MoviesController < ApplicationController
       
       # If ratings value is null
       if (params[:ratings].nil?)
-        redirect_to movies_path({:ratings => {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}})
+        redirect_to movies_path({:sort => "no", :ratings => {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}})
       end
       
       
@@ -43,7 +43,6 @@ class MoviesController < ApplicationController
     @date_class = "hilite"
     
     @ratings_to_show = params[:ratings] 
-
     @sort = params[:sort]
 
     
