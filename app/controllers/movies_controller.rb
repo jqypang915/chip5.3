@@ -44,8 +44,12 @@ class MoviesController < ApplicationController
     session[:ratings] = @ratings_to_show
     session[:sort] = @sort
 
-   
+     
+    
     @movies = Movie.with_ratings(@ratings_to_show)
+    if @ratings_to_show == nil
+      @ratings_to_show = Array.new
+    end
     
   
     if @sort == "title"
