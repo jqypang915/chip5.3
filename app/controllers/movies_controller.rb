@@ -10,7 +10,6 @@ class MoviesController < ApplicationController
     # If it was a Refresh Request    
     if (!params[:commit].blank?)
       
-      # If ratings value is null
       if (params[:ratings].nil?)
         session.clear
         redirect_to movies_path({:sort => session[:sort], :ratings => {"G" => 1,"PG" => 1,"PG-13" => 1,"R" => 1}})
